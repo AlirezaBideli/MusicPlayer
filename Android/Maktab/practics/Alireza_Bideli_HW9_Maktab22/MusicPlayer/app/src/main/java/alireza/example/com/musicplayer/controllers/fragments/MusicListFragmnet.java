@@ -1,33 +1,26 @@
 package alireza.example.com.musicplayer.controllers.fragments;
 
 
-import android.content.ContentUris;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 import alireza.example.com.musicplayer.R;
 import alireza.example.com.musicplayer.helpers.FragmentStart;
 import alireza.example.com.musicplayer.models.Music;
 import alireza.example.com.musicplayer.models.MusicLab;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +29,7 @@ import alireza.example.com.musicplayer.models.MusicLab;
  */
 public class MusicListFragmnet extends Fragment implements FragmentStart {
 
-    private Bitmap mMusicImg;
+
     //Widgets variables
     private RecyclerView mRecyMusic;
     //Simple variables
@@ -56,6 +49,11 @@ public class MusicListFragmnet extends Fragment implements FragmentStart {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mMusicLab=MusicLab.getInstance(getActivity());
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -64,7 +62,8 @@ public class MusicListFragmnet extends Fragment implements FragmentStart {
         View view = inflater.inflate(R.layout.fragment_music_list, container, false);
         initialization(view);
 
-        getDeviceMusics();
+
+        mMusicLab.getAndSaveMusics();
         MusicAdpter adpter = new MusicAdpter(mMusicLab.getMusicList());
         mRecyMusic.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyMusic.setHasFixedSize(true);
@@ -85,71 +84,6 @@ public class MusicListFragmnet extends Fragment implements FragmentStart {
 
     }
 
-    private void getDeviceMusics() {
-
-
-        String[] projection = {
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.ALBUM_ID
-        };
-
-        mMusicLab = MusicLab.getInstance();
-        cursor = Objects.requireNonNull(getActivity()).managedQuery(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                null,
-                null);
-
-        while (cursor.moveToNext()) {
-            Music music = makeMusicInApp(cursor);
-            mMusicLab.addMusic(music);
-        }
-    }
-
-    private Music makeMusicInApp(Cursor cursor) {
-
-        Music music = new Music();
-        music.set_id(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
-        music.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
-        music.setTittle(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-        music.setData(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)));
-        music.setDisplayName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)));
-        music.setDuration(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
-        Long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-        Uri sArtworkUri = Uri
-                .parse("content://media/external/audio/albumart");
-        Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        music.setImageUri(albumArtUri);
-
-
-        return music;
-    }
-
-    private void updateMusicImage(ImageView imageView, Uri albumArtUri) {
-        try {
-            mMusicImg = MediaStore.Images.Media.getBitmap(
-                    getActivity().getContentResolver(), albumArtUri);
-            mMusicImg = Bitmap.createScaledBitmap(mMusicImg, 250, 250, true);
-
-        } catch (FileNotFoundException exception) {
-            exception.printStackTrace();
-            mMusicImg = BitmapFactory.decodeResource(getActivity().getResources(),
-                    R.drawable.music_default_cover);
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        } finally {
-            imageView.setImageBitmap(mMusicImg);
-        }
-    }
-
 
     //mRecyMusic related calsses
     private class MusicHolder extends RecyclerView.ViewHolder {
@@ -168,7 +102,7 @@ public class MusicListFragmnet extends Fragment implements FragmentStart {
         public void bind(Music music) {
             mTxtTitle.setText(music.getTittle());
             mTxtArtist.setText(music.getArtist());
-            updateMusicImage(mImgMusic,music.getImageUri());
+            mMusicLab.updateMusicImage(mImgMusic, music.getImageUri());
 
         }
     }
