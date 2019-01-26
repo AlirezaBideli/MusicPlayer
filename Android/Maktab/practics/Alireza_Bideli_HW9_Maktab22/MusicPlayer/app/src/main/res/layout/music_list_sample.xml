@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+
+    app:cardBackgroundColor="@android:drawable/screen_background_dark_transparent"
+    app:cardCornerRadius="0dp"
+    app:strokeColor="@color/music_item_color"
+    app:strokeWidth="2dp">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/music_picture"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:contentDescription="@string/default_image_text"
+        android:src="@drawable/music_default_cover"
+ />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+>
+
+        <TextView
+            android:id="@+id/title_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="@string/title_text"
+            android:textColor="@color/album_background"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/artist_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/artist_name" />
+    </LinearLayout>
+</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
+
