@@ -18,18 +18,20 @@ import java.util.List;
 import alireza.example.com.musicplayer.R;
 
 public class MusicLab {
-    private static final MusicLab instance = new MusicLab();
-    private static Context mContext;
+    private static MusicLab instance;
+    private Context mContext;
     private Bitmap mMusicImg;
     private List<Music> mMusicList = new ArrayList<>();
+    private MediaPlayer mMediaPlayer = new MediaPlayer();
 
 
-    private MusicLab() {
-
+    private MusicLab(Context context) {
+        mContext = context.getApplicationContext();
     }
 
     public static MusicLab getInstance(Context context) {
-            mContext = context;
+        if (instance == null)
+            instance = new MusicLab(context);
         return instance;
     }
 
@@ -88,7 +90,6 @@ public class MusicLab {
     }
 
 
-
     private Music makeMusicInApp(Cursor cursor) {
 
         Music music = new Music();
@@ -106,6 +107,21 @@ public class MusicLab {
 
 
         return music;
+    }
+
+
+    public void playMusic(Music music) throws IOException {
+
+        String filePath = music.getData();
+
+        //Use reset to reinitialized the media player for each time
+        //it plays musics and prevent app crashes
+        mMediaPlayer.reset();
+        mMediaPlayer.setDataSource(filePath);
+        mMediaPlayer.prepare();
+        mMediaPlayer.start();
+
+
     }
 
 

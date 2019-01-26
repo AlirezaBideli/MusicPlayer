@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.List;
 
 import alireza.example.com.musicplayer.R;
@@ -52,7 +53,7 @@ public class MusicListFragmnet extends Fragment implements FragmentStart {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMusicLab=MusicLab.getInstance(getActivity());
+        mMusicLab = MusicLab.getInstance(getActivity());
     }
 
     @Override
@@ -63,13 +64,17 @@ public class MusicListFragmnet extends Fragment implements FragmentStart {
         initialization(view);
 
 
+        fiilMusicRecyclerView();
+        return view;
+
+    }
+
+    private void fiilMusicRecyclerView() {
         mMusicLab.getAndSaveMusics();
         MusicAdpter adpter = new MusicAdpter(mMusicLab.getMusicList());
         mRecyMusic.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyMusic.setHasFixedSize(true);
         mRecyMusic.setAdapter(adpter);
-        return view;
-
     }
 
 
@@ -91,19 +96,32 @@ public class MusicListFragmnet extends Fragment implements FragmentStart {
         private TextView mTxtTitle;
         private TextView mTxtArtist;
         private ImageView mImgMusic;
+        private Music mCurrentMusic;
 
         public MusicHolder(View itemView) {
             super(itemView);
             mTxtTitle = itemView.findViewById(R.id.title_txt);
             mTxtArtist = itemView.findViewById(R.id.artist_txt);
             mImgMusic = itemView.findViewById(R.id.music_picture);
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        mMusicLab.playMusic(mCurrentMusic);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         public void bind(Music music) {
             mTxtTitle.setText(music.getTittle());
             mTxtArtist.setText(music.getArtist());
             mMusicLab.updateMusicImage(mImgMusic, music.getImageUri());
-
+            mCurrentMusic = music;
         }
     }
 
