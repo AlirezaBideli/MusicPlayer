@@ -21,9 +21,9 @@ public class MusicLab {
     private static MusicLab instance;
     private Context mContext;
     private Bitmap mMusicImg;
+
     private List<Music> mMusicList = new ArrayList<>();
     private MediaPlayer mMediaPlayer = new MediaPlayer();
-
 
     private MusicLab(Context context) {
         mContext = context.getApplicationContext();
@@ -74,7 +74,7 @@ public class MusicLab {
         try {
             mMusicImg = MediaStore.Images.Media.getBitmap(
                     mContext.getContentResolver(), albumArtUri);
-            mMusicImg = Bitmap.createScaledBitmap(mMusicImg, 250, 250, true);
+            mMusicImg = Bitmap.createScaledBitmap(mMusicImg, 100, 100, true);
 
         } catch (FileNotFoundException exception) {
             exception.printStackTrace();
@@ -110,18 +110,28 @@ public class MusicLab {
     }
 
 
-    public void playMusic(Music music) throws IOException {
+    public void playMusic(Music music, boolean isPlayAgain) throws IOException {
 
         String filePath = music.getData();
 
         //Use reset to reinitialized the media player for each time
         //it plays musics and prevent app crashes
-        mMediaPlayer.reset();
-        mMediaPlayer.setDataSource(filePath);
-        mMediaPlayer.prepare();
+        if (!isPlayAgain) {
+            mMediaPlayer.reset();
+            mMediaPlayer.setDataSource(filePath);
+            mMediaPlayer.prepare();
+        } else
+            mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
+
+
         mMediaPlayer.start();
+    }
 
 
+    public void pauseMusic() {
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.pause();
+        }
     }
 
 

@@ -3,7 +3,7 @@ package alireza.example.com.musicplayer.helpers;
 import android.content.Context;
 import android.content.Intent;
 
-import alireza.example.com.musicplayer.controllers.activities.MusicPalyerActivity;
+import alireza.example.com.musicplayer.controllers.activities.MusicPlayerActivity;
 
 /**
  * Created by ADMIN on 1/24/2019.
@@ -16,7 +16,7 @@ public class ActivityHelper {
 
 
     public static Intent MusicListAIntent(Context context) {
-        Intent intent = new Intent(context, MusicPalyerActivity.class);
+        Intent intent = new Intent(context, MusicPlayerActivity.class);
         return intent;
     }
 

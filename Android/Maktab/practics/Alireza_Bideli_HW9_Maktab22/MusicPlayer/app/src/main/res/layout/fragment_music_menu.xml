@@ -3,4 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="alireza.example.com.musicplayer.controllers.fragments.MusicMenuFragment"/>
+    tools:context="alireza.example.com.musicplayer.controllers.fragments.MusicMenuFragment">
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
