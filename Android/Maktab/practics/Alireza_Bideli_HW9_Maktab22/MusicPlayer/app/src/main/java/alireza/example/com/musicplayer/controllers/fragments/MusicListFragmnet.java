@@ -87,7 +87,7 @@ public class MusicListFragmnet extends Fragment implements FragmentStart, View.O
         mMusicPosition = mMusicLab.getCurrentPosition();
         mCurrentMusic = mMusicList.get(mMusicPosition);
         mPlayClickedCount = mMusicLab.getPlayClickedCount();
-        mIsPlaying = mMusicLab.isPlaying();
+        mIsPlaying = mMusicLab.isPlayAgain();
 
         mPlayState= Music.PlayState.REPEAT_ALL;
 
@@ -192,7 +192,7 @@ public class MusicListFragmnet extends Fragment implements FragmentStart, View.O
             if (mIsPlaying) {
                 mBtnPlay.setIconResource(R.drawable.play);
                 mMusicLab.pauseMusic();
-                mMusicLab.setPlaying(false);
+                mMusicLab.setPlayAgain(false);
                 mIsPlaying = false;
 
             } else {
@@ -203,7 +203,7 @@ public class MusicListFragmnet extends Fragment implements FragmentStart, View.O
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                mMusicLab.setPlaying(true);
+                mMusicLab.setPlayAgain(true);
                 mIsPlaying = true;
 
 
@@ -261,10 +261,10 @@ public class MusicListFragmnet extends Fragment implements FragmentStart, View.O
 
                         if (mCurrentMusic != previousMusic) {
                             mMusicLab.setPlayClickedCount(0);
-                            mMusicLab.setPlaying(false);
+                            mMusicLab.setPlayAgain(false);
+                            mIsPlaying = false;
 
                             mPlayClickedCount = 0;
-                            mIsPlaying = false;
                         }
                         fillMusicBar();
                         playOrPause();

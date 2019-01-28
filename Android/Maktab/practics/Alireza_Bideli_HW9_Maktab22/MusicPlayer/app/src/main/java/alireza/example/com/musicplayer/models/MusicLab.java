@@ -26,13 +26,13 @@ public class MusicLab {
     private Bitmap mMusicImg;
     private List<Music> mMusicList = new ArrayList<>();
     private MediaPlayer mMediaPlayer = new MediaPlayer();
-    private boolean mIsPlaying;
     private int mPlayClickedCount;
     private Music mCurrentMusic;
     private int mCurrentPosition;
     //this is used for shuffle and repeat musics
     //this is used with Music.PlayState
     private List<Integer> mPositionList;
+    private boolean mIsPlayAgain;
 
     private MusicLab(Context context) {
         mContext = context.getApplicationContext();
@@ -45,6 +45,14 @@ public class MusicLab {
         if (instance == null)
             instance = new MusicLab(context);
         return instance;
+    }
+
+    public boolean isPlayAgain() {
+        return mIsPlayAgain;
+    }
+
+    public void setPlayAgain(boolean playAgain) {
+        mIsPlayAgain = playAgain;
     }
 
     public List<Integer> getPositionList() {
@@ -75,13 +83,6 @@ public class MusicLab {
         mCurrentPosition = currentPosition;
     }
 
-    public boolean isPlaying() {
-        return mIsPlaying;
-    }
-
-    public void setPlaying(boolean playing) {
-        mIsPlaying = playing;
-    }
 
     public int getPlayClickedCount() {
         return mPlayClickedCount;
@@ -220,7 +221,7 @@ public class MusicLab {
 
     private void startPlaying(int newPosition) {
         mCurrentMusic = mMusicList.get(newPosition);
-        mIsPlaying = false;
+        mIsPlayAgain = false;
         mPlayClickedCount = 0;
         try {
             playMusic(mCurrentMusic, false);

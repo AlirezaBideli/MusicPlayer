@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import alireza.example.com.musicplayer.R;
@@ -48,7 +47,7 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
     private Music mCurrentMusic;
     private List<Music> mMusicList;
     private MusicLab mMusicLab;
-    private boolean mIsPlayAgain;
+
     private int mPlayClickedCount;
     private int mImgWidth = 250;
     private int mImgHeight = 250;
@@ -60,10 +59,7 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
     private int mediaMax;
     private int mPreviousState;
     private int mPlayStateCounter;
-    private List<Integer> mPositionList;
     private Music.PlayState mPlayState = Music.PlayState.REPEAT_ALL;
-
-
     private Runnable moveSeekBarThread = new Runnable() {
         public void run() {
             if (mMusicLab.getMediaPlayer().isPlaying()) {
@@ -107,25 +103,15 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
             mMusicPostion = mMusicLab.getCurrentPosition();
             mMusicList = mMusicLab.getMusicList();
             mCurrentMusic = mMusicLab.getCurrentMusic();
-            mIsPlayAgain = mMusicLab.getMediaPlayer().isPlaying();
-            mPlayClickedCount = mMusicLab.getPlayClickedCount();
+            mPlayClickedCount = 1;
             mPreviousPosition = mMusicPostion;
             mMusicCurrentTime = mMusicLab.getMediaPlayer().getCurrentPosition();
             mHandler = new Handler();
             mMediaPlayer = mMusicLab.getMediaPlayer();
             mPlayState = Music.PlayState.REPEAT_ALL;
-            fillPositionList();
 
 
         }
-    }
-
-    private void fillPositionList() {
-        mPositionList = new ArrayList<>();
-        int listSize = mMusicList.size();
-
-        for (int i = 0; i < listSize; i++)
-            mPositionList.add(i);
     }
 
     @Override
@@ -190,10 +176,14 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.music_pager, container, false);
                 ImageView musicPicture = layout.findViewById(R.id.music_image_pager);
-                TextView musicTitle=layout.findViewById(R.id.music_title_pager);
+                TextView musicTitle = layout.findViewById(R.id.music_title_pager);
                 musicTitle.setText(mMusicList.get(position).getTittle());
                 mMusicLab.updateMusicImage(musicPicture, mMusicList.get(position).getImageUri(), mImgWidth, mImgHeight);
                 container.addView(layout);
+
+
+                mPlayClickedCount = 0;
+                BtnPlay.setIconResource(R.drawable.pause);
                 return layout;
             }
 
@@ -237,15 +227,13 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
                 if (mMediaPlayer.getCurrentPosition() > 100) {
                     if (mPreviousPosition > position) {
                         moveToPrevious();
+                        resetDatas(position);
                     } else if (mPreviousPosition < position) {
                         moveToNext();
-
+                        resetDatas(position);
 
                     }
-                    mCurrentMusic = mMusicLab.getCurrentMusic();
-                    mIsPlayAgain = false;
-                    mPlayClickedCount = 0;
-                    mPreviousPosition = position;
+
 
                 }
 
@@ -265,7 +253,7 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
             }
         });
 
-        PagerMusicPicture.setCurrentItem(mMusicPostion);
+        PagerMusicPicture.setCurrentItem(mMusicPostion, true);
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
@@ -274,6 +262,14 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
             }
         });
 
+    }
+
+    private void resetDatas(int position) {
+        mCurrentMusic = mMusicLab.getCurrentMusic();
+
+
+        mPlayClickedCount = 0;
+        mPreviousPosition = position;
     }
 
     private void checkMusicPosition() {
@@ -335,40 +331,35 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
         }
 
 
-
     }
 
     private void playOrPause() {
-        if (mCurrentMusic != null) {
-            if (mIsPlayAgain) {
-                BtnPlay.setIconResource(R.drawable.play);
-                mMusicLab.pauseMusic();
-                mMusicLab.setPlaying(false);
-                mIsPlayAgain = false;
 
-            } else {
-                BtnPlay.setIconResource(R.drawable.pause);
-                try {
+        if (mMediaPlayer.isPlaying()) {
+            BtnPlay.setIconResource(R.drawable.play);
+            mMusicLab.pauseMusic();
 
-                    mMusicLab.playMusic(mCurrentMusic, checkPlayCount());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mMusicLab.setPlaying(true);
-                mIsPlayAgain = true;
+        } else {
+            BtnPlay.setIconResource(R.drawable.pause);
+            try {
 
-
+                mMusicLab.playMusic(mCurrentMusic, true);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
-    }
 
+
+
+        }
+
+    }
+/*
     private boolean checkPlayCount() {
-        int count = ++mPlayClickedCount;
-        mMusicLab.setPlayClickedCount(count);
-        mPlayClickedCount = count;
+
+        mPlayClickedCount++;
         return mPlayClickedCount != 1;
 
-    }
+    }*/
 
 
     private void moveToNext() {
@@ -377,10 +368,9 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
         mMusicLab.moveToNextMusic(mPlayState);
         mMusicPostion = mMusicLab.getCurrentPosition();
 
-        mIsPlayAgain = false;
+
         mCurrentMusic = mMusicLab.getCurrentMusic();
-        int newPosition = mPositionList.get(mMusicPostion);
-        PagerMusicPicture.setCurrentItem(newPosition, false);
+        PagerMusicPicture.setCurrentItem(mMusicPostion, false);
 
 
     }
@@ -390,16 +380,20 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
 
         mMusicLab.moveToPreviousMusic(mPlayState);
         mMusicPostion = mMusicLab.getCurrentPosition();
-        mIsPlayAgain = false;
+
         mCurrentMusic = mMusicLab.getCurrentMusic();
-        PagerMusicPicture.setAdapter(mPagerAdapter);
-        int newPosition = mPositionList.get(mMusicPostion);
-        PagerMusicPicture.setCurrentItem(newPosition, false);
+        PagerMusicPicture.setCurrentItem(mMusicPostion, false);
 
 
     }
 
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMusicLab.setCurrentMusic(mCurrentMusic);
+        mMusicLab.setCurrentPosition(mMusicPostion);
+        mMusicLab.setPlayClickedCount(mPlayClickedCount);
+    }
 }
 
 
