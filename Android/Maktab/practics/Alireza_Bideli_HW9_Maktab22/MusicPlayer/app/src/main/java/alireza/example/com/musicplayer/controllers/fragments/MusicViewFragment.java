@@ -372,6 +372,7 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
         mCurrentMusic = mMusicLab.getCurrentMusic();
         PagerMusicPicture.setCurrentItem(mMusicPostion, false);
 
+        syncSeekBar();
 
     }
 
@@ -384,7 +385,7 @@ public class MusicViewFragment extends Fragment implements FragmentStart, View.O
         mCurrentMusic = mMusicLab.getCurrentMusic();
         PagerMusicPicture.setCurrentItem(mMusicPostion, false);
 
-
+        syncSeekBar();
     }
 
     @Override
