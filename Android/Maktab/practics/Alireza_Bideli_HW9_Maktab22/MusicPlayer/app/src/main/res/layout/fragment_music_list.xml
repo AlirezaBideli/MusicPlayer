@@ -81,16 +81,16 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/music_play"
-            android:layout_width="0dp"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+            android:layout_width="wrap_content"
             android:layout_height="32dp"
-
             android:layout_marginStart="32dp"
-            android:layout_marginEnd="16dp"
-            android:scaleType="fitEnd"
-
-            android:src="@drawable/play"
+            android:layoutDirection="rtl"
+            app:backgroundTint="@color/music_controllerrs_color"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/play"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/music_next"
             app:layout_constraintHorizontal_bias="0.5"
@@ -99,15 +99,17 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout"
             app:layout_constraintVertical_bias="1.0" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/music_next"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
             android:layout_width="97dp"
             android:layout_height="32dp"
-
             android:layout_marginTop="2dp"
             android:layout_marginBottom="1dp"
             android:scaleType="fitStart"
-            android:src="@drawable/next"
+            app:backgroundTint="@color/music_controllerrs_color"
+            app:cornerRadius="50dp"
+            app:icon="@drawable/next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout"
@@ -119,8 +121,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.0" />
-
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

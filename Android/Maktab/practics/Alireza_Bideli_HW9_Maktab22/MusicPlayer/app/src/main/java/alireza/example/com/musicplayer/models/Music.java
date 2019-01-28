@@ -72,4 +72,13 @@ public class Music {
     public void setDuration(int duration) {
         mDuration = duration;
     }
+
+    public enum PlayState
+    {
+        REPEAT_ONE,
+        REPEAT_ALL,
+        SHUFFLE
+
+    }
+
 }

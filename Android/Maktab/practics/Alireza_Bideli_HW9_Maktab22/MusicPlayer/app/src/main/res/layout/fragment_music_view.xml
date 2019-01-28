@@ -1,14 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/music_item_color"
+
     tools:context=".controllers.fragments.MusicViewFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/musicImage_container_musicViewFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/music_seek_musicViewFragment"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:scrollbarThumbHorizontal="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/music_play_musicViewFragment"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="42dp"
+        android:scaleType="fitXY"
+        app:icon="@drawable/play"
+        app:cornerRadius="50dp"
+
+        app:backgroundTint="@color/music_controllerrs_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/music_next_musicViewFragment"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/music_privious_musicViewFragment"
+        app:layout_constraintTop_toBottomOf="@+id/music_seek_musicViewFragment" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/music_next_musicViewFragment"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="43dp"
+        app:icon="@drawable/next"
+        app:cornerRadius="50dp"
+
+        app:backgroundTint="@color/music_controllerrs_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/music_playState_musicViewFragment"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/music_play_musicViewFragment"
+        app:layout_constraintTop_toBottomOf="@+id/music_seek_musicViewFragment" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/music_privious_musicViewFragment"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="43dp"
+        app:icon="@drawable/privious"
+        app:cornerRadius="50dp"
+
+        app:backgroundTint="@color/music_controllerrs_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/music_play_musicViewFragment"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/music_seek_musicViewFragment" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/music_playState_musicViewFragment"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+        android:layout_width="30dp"
+
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="43dp"
+        app:backgroundTint="@color/music_controllerrs_color"
+        app:cornerRadius="50dp"
+        app:icon="@drawable/replay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/music_seek_musicViewFragment"
+        app:strokeWidth="0dp" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="130dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

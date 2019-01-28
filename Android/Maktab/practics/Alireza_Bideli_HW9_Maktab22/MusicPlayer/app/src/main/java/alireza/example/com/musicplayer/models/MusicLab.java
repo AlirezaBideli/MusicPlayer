@@ -13,26 +13,86 @@ import android.widget.ImageView;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import alireza.example.com.musicplayer.R;
 
 public class MusicLab {
+    private static final byte NEXT = 1;
+    private static final byte PREVIOUS = 0;
     private static MusicLab instance;
     private Context mContext;
     private Bitmap mMusicImg;
-
     private List<Music> mMusicList = new ArrayList<>();
     private MediaPlayer mMediaPlayer = new MediaPlayer();
+    private boolean mIsPlaying;
+    private int mPlayClickedCount;
+    private Music mCurrentMusic;
+    private int mCurrentPosition;
+    //this is used for shuffle and repeat musics
+    //this is used with Music.PlayState
+    private List<Integer> mPositionList;
 
     private MusicLab(Context context) {
         mContext = context.getApplicationContext();
+        getAndSaveMusics();
+        fillPositionList();
+
     }
 
     public static MusicLab getInstance(Context context) {
         if (instance == null)
             instance = new MusicLab(context);
         return instance;
+    }
+
+    public List<Integer> getPositionList() {
+        return mPositionList;
+    }
+
+    private void fillPositionList() {
+        mPositionList = new ArrayList<>();
+        for (int i = 0; i < mMusicList.size(); i++)
+            mPositionList.add(i);
+    }
+
+    public Music getCurrentMusic() {
+
+        return mCurrentMusic;
+    }
+
+    public void setCurrentMusic(Music currentMusic) {
+
+        mCurrentMusic = currentMusic == null ? mMusicList.get(0) : currentMusic;
+    }
+
+    public int getCurrentPosition() {
+        return mCurrentPosition;
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        mCurrentPosition = currentPosition;
+    }
+
+    public boolean isPlaying() {
+        return mIsPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        mIsPlaying = playing;
+    }
+
+    public int getPlayClickedCount() {
+        return mPlayClickedCount;
+    }
+
+    public void setPlayClickedCount(int playClickedCount) {
+        mPlayClickedCount = playClickedCount;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mMediaPlayer;
     }
 
 
@@ -70,14 +130,14 @@ public class MusicLab {
         }
     }
 
-    public void updateMusicImage(ImageView imageView, Uri albumArtUri) {
+    public void updateMusicImage(ImageView imageView, Uri albumArtUri, int width, int height) {
         try {
             mMusicImg = MediaStore.Images.Media.getBitmap(
                     mContext.getContentResolver(), albumArtUri);
-            mMusicImg = Bitmap.createScaledBitmap(mMusicImg, 100, 100, true);
+            mMusicImg = Bitmap.createScaledBitmap(mMusicImg, width, height, true);
 
-        } catch (FileNotFoundException exception) {
-            exception.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
             mMusicImg = BitmapFactory.decodeResource(mContext.getResources(),
                     R.drawable.music_default_cover);
 
@@ -132,6 +192,78 @@ public class MusicLab {
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
         }
+    }
+
+    public void moveToNextMusic(Music.PlayState playstate) {
+        move(playstate, NEXT);
+    }
+
+    public void moveToPreviousMusic(Music.PlayState playstate) {
+
+        move(playstate, PREVIOUS);
+
+    }
+
+    private void move(Music.PlayState playState, int actionId) {
+        int newPosition;
+        if (playState == Music.PlayState.REPEAT_ONE) {
+            newPosition = mCurrentPosition;
+        } else {
+            changeCurrentPosition(actionId);
+
+            List<Integer> positions = choosePositions(playState);
+            newPosition = positions.get(mCurrentPosition);
+        }
+        startPlaying(newPosition);
+        mCurrentPosition = newPosition;
+    }
+
+    private void startPlaying(int newPosition) {
+        mCurrentMusic = mMusicList.get(newPosition);
+        mIsPlaying = false;
+        mPlayClickedCount = 0;
+        try {
+            playMusic(mCurrentMusic, false);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    private void changeCurrentPosition(int actionId) {
+        if (actionId == NEXT)
+            mCurrentPosition++;
+        else mCurrentPosition--;
+    }
+
+
+    private List<Integer> getShufflePosList() {
+        List<Integer> temp = new ArrayList<>();
+        temp.addAll(mPositionList);
+        Collections.shuffle(temp);
+        return temp;
+    }
+
+    private List<Integer> getMainPosList() {
+        return mPositionList;
+    }
+
+
+    private List<Integer> choosePositions(Music.PlayState playState) {
+        List<Integer> result = new ArrayList<>();
+        switch (playState) {
+
+            case REPEAT_ALL:
+                result = getMainPosList();
+                break;
+
+            case SHUFFLE:
+                result = getShufflePosList();
+
+                break;
+        }
+        return result;
     }
 
 
